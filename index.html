@@ -8,6 +8,14 @@
         <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
         <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
         <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <script src='javascripts/crafty.js'></script>
+        <script src='javascripts/craftyMFace.js'></script>
+        <script src='javascripts/angular.min.js'></script>
+        <!--        <script src="//cdn.firebase.com/js/client/2.2.1/firebase.js"></script>-->
+        <script src="javascripts/firebase.js"></script>
+        <script src='javascripts/main.js'></script>
+
 
         <!--[if lt IE 9]>
         <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -44,11 +52,25 @@
 
         <div id="content-wrapper">
             <div class="inner clearfix">
+                <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                <!-- bannerad -->
+                <ins class="adsbygoogle"
+                     style="display:inline-block;width:728px;height:90px"
+                     data-ad-client="ca-pub-3405606336907850"
+                     data-ad-slot="1281948327"></ins>
+                <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
                 <section id="main-content">
                     <h3>Welcome</h3>
 
                     <p>This project will contain a simple example of multiplayer "game" with Crafty.js over the internet with Firebase. Art created by Reiner.</p>
                     <p>This is still under work and will hopefully be ready in the near future.</p>
+
+                    <div data-ng-app="firebaseMultiplayerExample" data-ng-controller="MainCtrl" data-ng-init="init()">
+                        Username: <input type="text" data-ng-model="username" /><button data-ng-click="connect()">Connect</button>                        
+                        <div id="craftydiv"></div>
+                    </div>
 
                 </section>
 
