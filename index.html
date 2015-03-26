@@ -66,7 +66,13 @@
 
                     <p>This project will contain a simple example of multiplayer "game" with Crafty.js over the internet with Firebase. Art created by Reiner.</p>
                     <p>This is still under work and will hopefully be ready in the near future.</p>
-
+                    <h4>Instructions</h4>
+                    <p>
+                        Type in a username that is at least 4 characters, and hit connect. You can now click to move around the (small) world. You will see
+                        other people who are logged in moving around also. There is a very good chance that no other users will be on simultaneously
+                        since this won't be receiving a ton of traffic, so open this page in a new tab or browser window and enter a different user name
+                        to see the multiplayer in action.
+                    </p>
                     <div data-ng-app="firebaseMultiplayerExample" data-ng-controller="MainCtrl" data-ng-init="init()">
                         Username: <input type="text" data-ng-model="username" /><button data-ng-click="connect()">Connect</button>                        
                         <div id="craftydiv"></div>
