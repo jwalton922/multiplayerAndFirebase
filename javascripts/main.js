@@ -70,7 +70,7 @@ angular.module('firebaseMultiplayerExample')
 
             $scope.init = function () {
                 Crafty.init(800, 600);
-                Crafty.canvas.init("craftydiv");
+                Crafty.canvas.init("cr-stage");
                 Crafty.c("Hero", {
                     init: function () {
                         this.addComponent("2D, Canvas, Color, MouseFace");
