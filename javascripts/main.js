@@ -201,6 +201,10 @@ angular.module('firebaseMultiplayerExample')
             }
 
             $scope.addPlayer = function (playerObj) {
+                if($scope.otherPlayers[playerObj.player]){
+                    return;
+                }
+                $log.log("adding new player: "+playerObj.player);
                 var otherPlayer = Crafty.e("Hero, knight, Tween, SpriteAnimation, CharAnims, MouseFace, moveable").attr({x: playerObj.x, y: playerObj.y}).CharAnims($scope.animations.knight);
                 var playerText = Crafty.e("2D, Canvas, Text").text(playerObj.player).attr({x: playerObj.x + 48, y: playerObj.y});
                 otherPlayer.attach(playerText);
