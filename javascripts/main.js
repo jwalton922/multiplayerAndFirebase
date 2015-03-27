@@ -39,7 +39,7 @@ angular.module('firebaseMultiplayerExample')
                     alert("You already signed in");
                     return;
                 }
-                $scope.playerText = Crafty.e("2D, Canvas, Text").text($scope.username).attr({x: $scope.startX+48, y: $scope.startY});
+                $scope.playerText = Crafty.e("2D, Canvas, Text").text($scope.username).attr({x: $scope.startX + 48, y: $scope.startY});
                 $scope.player2 = Crafty.e("Hero, knight, Tween, SpriteAnimation, CharAnims, MouseFace, moveable").attr({x: $scope.startX, y: $scope.startY})
                         .bind("MouseDown", function (data) {
                             //$log.log("mouse click: " + angular.toJson(data));
@@ -120,6 +120,8 @@ angular.module('firebaseMultiplayerExample')
                         } else {
                             action = "walk_e";
                         }
+                        this.destX = end.x;
+                        this.destY = end.y;
                         this.animate(action, -1);
                     }});
 
@@ -175,20 +177,32 @@ angular.module('firebaseMultiplayerExample')
 
                 $scope.firebase.on("child_added", function (snapshot) {
                     var value = snapshot.val();
-                    $scope.addPlayer(value);
+                    if (value.player !== $scope.username) {
+                        $scope.addPlayer(value);
+                    }
                 });
 
                 $scope.firebase.on("child_changed", function (snapshot) {
                     var value = snapshot.val();
 
                     $log.log("child changed called, new value: " + angular.toJson(value));
-                    $scope.otherPlayers[value.player].move(value.action.end);
+                    if (value.player !== $scope.username) {
+                        if (value.action.end.x !== $scope.otherPlayers[value.player].destX &&
+                                value.action.end.y !== $scope.otherPlayers[value.player].destY) {
+                            $scope.otherPlayers[value.player].move(value.action.end);
+                        }
+                    }
+                });
+
+                $scope.firebase.on("child_removed", function (snapshot) {
+                    var value = snapshot.val();
+                    $scope.otherPlayers[value.player].destroy();
                 });
             }
 
             $scope.addPlayer = function (playerObj) {
-                var otherPlayer = Crafty.e("Hero, knight, Tween, SpriteAnimation, CharAnims, MouseFace, moveable").attr({x: playerObj.x, y: $scope.startY}).CharAnims($scope.animations.knight);
-                var playerText = Crafty.e("2D, Canvas, Text").text(playerObj.player).attr({x: playerObj.x+48, y: playerObj.y});
+                var otherPlayer = Crafty.e("Hero, knight, Tween, SpriteAnimation, CharAnims, MouseFace, moveable").attr({x: playerObj.x, y: playerObj.y}).CharAnims($scope.animations.knight);
+                var playerText = Crafty.e("2D, Canvas, Text").text(playerObj.player).attr({x: playerObj.x + 48, y: playerObj.y});
                 otherPlayer.attach(playerText);
                 $scope.otherPlayers[playerObj.player] = otherPlayer;
             }
