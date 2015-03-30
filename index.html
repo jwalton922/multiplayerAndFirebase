@@ -79,31 +79,6 @@
                         to see the multiplayer in action.
                     </p>
                     <p>Warning, changing username after you hit connect will currently cause problems. If you want a different username, refresh the page.</p>
-                    <div data-ng-app="firebaseMultiplayerExample" data-ng-controller="MainCtrl" data-ng-init="init()">
-                        Username: <input type="text" data-ng-model="username" /><button data-ng-click="connect()">Connect</button>                        
-                        <h5>Knock Down Leader Board</h5>
-                        <table class="table table-borderd">
-                            <tr><th>Leader</th><th>Knock Downs</th><th>Players</th></tr>
-                            <tr data-ng-repeat="leader in leaders">
-                                <td>{{leader.username}}</td>
-                                <td>{{leader.knockDowns}}</td>
-                                <td>{{leader.playersKnockedDown}}</td>
-                            </tr>
-                        </table>
-                        <div id="cr-stage" style="width:800px; height:600px;"></div>
-                        <div><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-                            <!-- skyscraper -->
-                            <ins class="adsbygoogle"
-                                 style="display:inline-block;width:300px;height:600px"
-                                 data-ad-client="ca-pub-3405606336907850"
-                                 data-ad-slot="8052531927"></ins>
-                            <script>
-                                                                        (adsbygoogle = window.adsbygoogle || []).push({});
-                            </script>
-                        </div>
-                    </div>
-                    <div id="disqus_thread"></div>                    
-                    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
 
                 </section>
 
@@ -125,7 +100,36 @@
 
 
         </div>
+        <div id="content-wrapper">
+            <div class="inner clearfix">
+                <div data-ng-app="firebaseMultiplayerExample" data-ng-controller="MainCtrl" data-ng-init="init()">
+                    Username: <input type="text" data-ng-model="username" /><button data-ng-click="connect()">Connect</button>                        
+                    <h5>Knock Down Leader Board</h5>
+                    <table class="table table-borderd">
+                        <tr><th>Leader</th><th>Knock Downs</th><th>Players</th></tr>
+                        <tr data-ng-repeat="leader in leaders">
+                            <td>{{leader.username}}</td>
+                            <td>{{leader.knockDowns}}</td>
+                            <td>{{leader.playersKnockedDown}}</td>
+                        </tr>
+                    </table>
+                    <div id="cr-stage" style="width:800px; height:600px;"></div>
+                    <div><script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                        <!-- skyscraper -->
+                        <ins class="adsbygoogle"
+                             style="display:inline-block;width:300px;height:600px"
+                             data-ad-client="ca-pub-3405606336907850"
+                             data-ad-slot="8052531927"></ins>
+                        <script>
+                                        (adsbygoogle = window.adsbygoogle || []).push({});
+                        </script>
+                    </div>
+                </div>
+                <div id="disqus_thread"></div>                    
+                <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript>
 
+            </div>                
+        </div>
         <script type="text/javascript">
             /* * * CONFIGURATION VARIABLES * * */
             var disqus_shortname = 'jwalton922';

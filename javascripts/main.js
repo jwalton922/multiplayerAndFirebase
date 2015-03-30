@@ -15,7 +15,7 @@ angular.module('firebaseMultiplayerExample')
             $scope.directionList = ["e", "n", "ne", "nw", "s", "se", "sw", "w"];
             $scope.lumberjackDirection = $scope.directionList[0];
             $scope.hitAnimationTime = 900;
-            $scope.width = 700;
+            $scope.width = 630;
             $scope.height = 800;
             $scope.heroWidth = 96;
             $scope.heroHeight = 96;
@@ -314,7 +314,7 @@ angular.module('firebaseMultiplayerExample')
                 $scope.startX = ($scope.width / 2) - ($scope.heroWidth / 2);
                 $scope.startY = ($scope.height / 2) - ($scope.heroHeight / 2);
 
-                $scope.tree = Crafty.e("2D, Canvas, tree").attr({x: 600, y: 250});
+                $scope.tree = Crafty.e("2D, Canvas, tree").attr({x: 300, y: 250});
                 $scope.firebase = new Firebase($scope.firebaseUrl);
                 $scope.firstLoad = true;
                 $scope.firebase.on("value", function (snapshot) {
