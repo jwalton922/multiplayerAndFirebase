@@ -23,13 +23,14 @@ angular.module('firebaseMultiplayerExample')
             $scope.arrowSpeed = 300; //px/s
             $scope.maxArrowDistance = 300; //px
             $scope.firebaseUrl = '//amber-fire-8177.firebaseIO.com/';
-
+            $scope.knockDowns = {};
             $scope.animations = {knight: [{action: "walk", startRow: 16, numFrames: 8, animSpeed: 800}, {action: "knock_down", startRow: 8, numFrames: 9, animSpeed: $scope.hitAnimationTime}]};
             $scope.username;
             $scope.firebase;
             $scope.otherPlayers = {};
             $scope.arrows = {};
             $scope.arrowIndex = 0;
+            $scope.leaders = [];
             $scope.thisFirebasePlayer = null;
             $scope.getArrowCellIndex = function (angle) {
 
@@ -68,9 +69,27 @@ angular.module('firebaseMultiplayerExample')
 //                gravity: {x: 0, y: 0.0},
 //                // sensible values are 0-3
 //                jitter: 0
-//            };
-
-
+//            };      
+            
+            $scope.updateLeaders = function(){
+                var leadersList = [];
+                for(var player in $scope.knockDowns){
+                    var knockedDownPlayers = $scope.knockDowns[player];
+                    var total = 0;
+                    var knockedDownList = [];
+                    for(var knockedDownPlayer in knockedDownPlayers){
+                        knockedDownList.push(knockedDownPlayer);
+                        total+=knockedDownPlayers[knockedDownPlayer];
+                    }
+                    var leader = {username: player, knockDowns: total, playersKnockedDown : knockedDownList};
+                    leadersList.push(leader);
+                }
+                leadersList.sort(function(a,b){
+                    return b.knockDowns - a.knockDowns;
+                });
+                $scope.leaders = leadersList;
+                $scope.$apply();
+            }
 
             $scope.connect = function () {
                 if (!$scope.username || $scope.username.length <= 3) {
@@ -99,6 +118,8 @@ angular.module('firebaseMultiplayerExample')
                             }
                         }).CharAnims($scope.animations.knight);
                 $scope.player2.canBeHit();
+                $scope.player2.username = $scope.username;
+                $scope.knockDowns[$scope.username] = {};
                 $scope.player2.attach($scope.playerText);
                 Crafty.viewport.follow($scope.player2, 0, 0);
                 var playerObj = {player: $scope.username, x: $scope.player2.attr("x"), y: $scope.player2.attr("y")}
@@ -109,6 +130,7 @@ angular.module('firebaseMultiplayerExample')
 //                    $log.log("Player x: "+$scope.player2.x);
                     $scope.thisFirebasePlayer.update({x: $scope.player2.x, y: $scope.player2.y});
                 }, 500);
+                $scope.updateLeaders();
             }
 
             $scope.init = function () {
@@ -140,7 +162,7 @@ angular.module('firebaseMultiplayerExample')
                         var start = {x: this.x + 48, y: this.y + 48};
                         var end = {x: end.x, y: end.y};
                         var uuid = Math.random();
-                        var arrowObj = {type: "arrow", start: start, end: end, uuid: uuid};
+                        var arrowObj = {type: "arrow", start: start, end: end, uuid: uuid, shooter: $scope.username};
                         var firebaseArrow = $scope.firebase.push(arrowObj);
                         firebaseArrow.onDisconnect().remove();
                         $scope.arrows[uuid] = firebaseArrow;
@@ -209,7 +231,26 @@ angular.module('firebaseMultiplayerExample')
                         this.collision();
                         this.checkHits('arrow') // check for collisions with entities that have the Solid component in each frame
                                 .bind("HitOn", function (hitData) {
-                                    if (!this.isHit) {
+                                    $log.log("collision arrow uuid: "+angular.toJson(hitData[0].obj.uuid));
+                                    var hitByOtherPlayerArrow = false;
+                                    
+                                    for(var i = 0; i < hitData.length; i++){
+                                        var shooter = hitData[i].obj.shooter;
+                                        if(!$scope.knockDowns[shooter]){
+                                            $scope.knockDowns[shooter] = {};
+                                        }                                        
+                                        if(shooter !== this.username){
+                                            hitByOtherPlayerArrow = true;                                            
+                                            if(!$scope.knockDowns[shooter][this.username]){
+                                                $scope.knockDowns[shooter] = {};
+                                                $scope.knockDowns[shooter][this.username] = 1;
+                                            } else {
+                                                $scope.knockDowns[shooter][this.username]++;
+                                            }
+                                        }
+                                    }
+                                    if (!this.isHit && hitByOtherPlayerArrow) {
+                                        
                                         this.isHit = true;
                                         $log.log("Collision with Solid entity occurred for the first time.");
                                         var action = "knock_down" + "_" + this.direction;
@@ -217,6 +258,7 @@ angular.module('firebaseMultiplayerExample')
                                         this.cancelTween("x");
                                         this.cancelTween("y");
                                         var character = this;
+                                        $scope.updateLeaders();
                                         $timeout(function () {
                                             character.animate("walk_" + character.direction, -1);
                                             character.attr({isHit : false});
@@ -306,6 +348,8 @@ angular.module('firebaseMultiplayerExample')
                     if (value.player) {
                         if (value.player !== $scope.username) {
                             $scope.addPlayer(value);
+                        } else {
+                            $log.log("Not adding playe: "+value.player+" username is: "+$scope.username);
                         }
                     } else if (value.type === "arrow") {
                         $scope.addArrow(snapshot, value);
@@ -353,6 +397,7 @@ angular.module('firebaseMultiplayerExample')
                 arrow.sprite(arrowSpriteIndex.x, arrowSpriteIndex.y);
                 $log.log("firebaseObj.uuid: " + firebaseObj.uuid);
                 arrow.uuid = firebaseObj.uuid;
+                arrow.shooter = firebaseObj.shooter;
 //                var gameX = end.x - 16;
 //                var gameY = end.y - 32;
                 var distance = $scope.maxArrowDistance;//Math.sqrt(deltaY * deltaY + deltaX * deltaX);
@@ -384,9 +429,12 @@ angular.module('firebaseMultiplayerExample')
                 }
                 $log.log("adding new player: " + playerObj.player);
                 var otherPlayer = Crafty.e("Hero, knight, Tween, SpriteAnimation, CharAnims, MouseFace, moveable, canBeHit").attr({x: playerObj.x, y: playerObj.y}).CharAnims($scope.animations.knight);
+                otherPlayer.username = playerObj.player;
                 otherPlayer.canBeHit();
+                $scope.knockDowns[playerObj.player] = {};
                 var playerText = Crafty.e("2D, Canvas, Text").text(playerObj.player).attr({x: playerObj.x + 48, y: playerObj.y});
                 otherPlayer.attach(playerText);
                 $scope.otherPlayers[playerObj.player] = otherPlayer;
+                $scope.updateLeaders();
             }
         });

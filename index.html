@@ -75,9 +75,18 @@
                         since this won't be receiving a ton of traffic, so open this page in a new tab or browser window and enter a different user name
                         to see the multiplayer in action.
                     </p>
-                    
+                    <p>Warning, changing username after you hit connect will currently cause problems. If you want a different username, refresh the page.</p>
                     <div data-ng-app="firebaseMultiplayerExample" data-ng-controller="MainCtrl" data-ng-init="init()">
                         Username: <input type="text" data-ng-model="username" /><button data-ng-click="connect()">Connect</button>                        
+                        <h5>Knock Down Leader Board</h5>
+                        <table class="table table-borderd">
+                            <tr><th>Leader</th><th>Knock Downs</th><th>Players</th></tr>
+                            <tr data-ng-repeat="leader in leaders">
+                                <td>{{leader.username}}</td>
+                                <td>{{leader.knockDowns}}</td>
+                                <td>{{leader.playersKnockedDown}}</td>
+                            </tr>
+                        </table>
                         <div id="cr-stage" style="width:800px; height:600px;"></div>
                     </div>
                     <div id="disqus_thread"></div>                    
