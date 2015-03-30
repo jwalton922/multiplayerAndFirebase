@@ -15,7 +15,7 @@ angular.module('firebaseMultiplayerExample')
             $scope.directionList = ["e", "n", "ne", "nw", "s", "se", "sw", "w"];
             $scope.lumberjackDirection = $scope.directionList[0];
             $scope.hitAnimationTime = 900;
-            $scope.width = 800;
+            $scope.width = 700;
             $scope.height = 800;
             $scope.heroWidth = 96;
             $scope.heroHeight = 96;
@@ -134,7 +134,7 @@ angular.module('firebaseMultiplayerExample')
             }
 
             $scope.init = function () {
-                Crafty.init(800, 600);
+                Crafty.init($scope.width, $scope.height);
                 Crafty.canvas.init("cr-stage");
                 Crafty.c("Hero", {
                     init: function () {
